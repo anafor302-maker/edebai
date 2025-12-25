@@ -1,0 +1,152 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{{ article.meta_title }}{% endblock %}
+
+{% block meta_description %}{{ article.meta_description }}{% endblock %}
+{% block meta_keywords %}{{ article.meta_keywords }}{% endblock %}
+
+{% block robots %}{% if article.noindex %}noindex, nofollow{% else %}index, follow{% endif %}{% endblock %}
+
+{% block canonical %}{% if article.canonical_url %}{{ article.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.og_title }}{% endblock %}
+{% block og_description %}{{ article.og_description }}{% endblock %}
+{% block og_image %}{% if article.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.og_image.url }}{% elif article.thumbnail %}{{ request.scheme }}://{{ request.get_host }}{{ article.thumbnail.url }}{% endif %}{% endblock %}
+
+{% block twitter_card %}{{ article.twitter_card_type }}{% endblock %}
+{% block twitter_title %}{{ article.og_title }}{% endblock %}
+{% block twitter_description %}{{ article.og_description }}{% endblock %}
+{% block twitter_image %}{% if article.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ article.og_image.url }}{% elif article.thumbnail %}{{ request.scheme }}://{{ request.get_host }}{{ article.thumbnail.url }}{% endif %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ article.title|escapejs }}",
+  "description": "{{ article.excerpt|escapejs }}",
+  "image": "{% if article.thumbnail %}{{ request.scheme }}://{{ request.get_host }}{{ article.thumbnail.url }}{% endif %}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ article.author_name|escapejs }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "EdebAi",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo.png' %}"
+    }
+  },
+  "datePublished": "{{ article.published_date|date:'c' }}",
+  "dateModified": "{{ article.updated_at|date:'c' }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<article class="section">
+    <div class="main-container">
+        <!-- Header -->
+        <div class="blog-detail-header">
+            <h1 class="blog-detail-title font-serif">{{ article.title }}</h1>
+            <div class="blog-detail-meta">
+                <span>Yazar: {{ article.author_name }}</span>
+                <span>•</span>
+                <span>{{ article.published_date|date:"d F Y" }}</span>
+                <span>•</span>
+                <span>{{ article.reading_time }} dakika okuma</span>
+                {% if article.category %}
+                <span>•</span>
+                <span><a href="{% url 'blog:category_detail' article.category.slug %}" style="color: #7c5cba;">{{ article.category.name }}</a></span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Cover Image -->
+        <div class="blog-detail-cover">
+            {% if article.thumbnail %}
+            <img src="{{ article.thumbnail.url }}" alt="{{ article.thumbnail_alt }}">
+            {% else %}
+            🤖
+            {% endif %}
+        </div>
+        
+        <!-- Content -->
+        <div class="blog-content">
+            <!-- Excerpt -->
+            <p style="font-size: 20px; font-weight: 500; opacity: 0.8; margin-bottom: 32px;">
+                {{ article.excerpt }}
+            </p>
+            
+            <!-- Dynamic Content -->
+            {% for item in content_items %}
+                {% if item.type == 'paragraph' %}
+                    {% with paragraph=item.data %}
+                        {% if paragraph.paragraph_type == 'heading' %}
+                            <h2>{{ paragraph.heading_text }}</h2>
+                        {% elif paragraph.paragraph_type == 'quote' %}
+                            <blockquote>{{ paragraph.content|linebreaks }}</blockquote>
+                        {% elif paragraph.paragraph_type == 'code' %}
+                            <pre><code>{{ paragraph.content }}</code></pre>
+                        {% else %}
+                            {{ paragraph.content|linebreaks }}
+                        {% endif %}
+                    {% endwith %}
+                {% elif item.type == 'image' %}
+                    {% with image=item.data %}
+                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="content-image">
+                        {% if image.caption %}
+                        <p class="image-caption">{{ image.caption }}</p>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+            
+            <!-- Author Bio -->
+            {% if article.author_bio %}
+            <div style="border-top: 2px solid #f5f3f0; margin-top: 48px; padding-top: 32px;">
+                <h3 style="font-size: 20px; margin-bottom: 12px;">Yazar Hakkında</h3>
+                <p style="font-size: 16px; opacity: 0.8;">{{ article.author_bio }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Related Articles -->
+        {% if related_articles %}
+        <div style="margin-top: 80px;">
+            <h3 class="section-title font-serif" style="font-size: 32px;">İlgili Makaleler</h3>
+            <div class="grid-3">
+                {% for related in related_articles %}
+                <article class="blog-card">
+                    <a href="{% url 'blog:article_detail' related.slug %}">
+                        <div class="blog-card-image">
+                            {% if related.thumbnail %}
+                            <img src="{{ related.thumbnail.url }}" alt="{{ related.thumbnail_alt }}">
+                            {% else %}
+                            📝
+                            {% endif %}
+                        </div>
+                        <div class="blog-card-content">
+                            <div class="blog-meta">
+                                <span>{{ related.published_date|date:"d F Y" }}</span>
+                                <span>•</span>
+                                <span>{{ related.reading_time }} dk</span>
+                            </div>
+                            <h4 class="blog-title font-serif">{{ related.title }}</h4>
+                            <p class="blog-excerpt">{{ related.excerpt|truncatewords:15 }}</p>
+                            <span class="read-more">
+                                Devamını Oku <span>→</span>
+                            </span>
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

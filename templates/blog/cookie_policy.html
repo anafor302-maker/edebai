@@ -1,0 +1,31 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{% if request.LANGUAGE_CODE == 'en' %}{{ policy.title_en }}{% else %}{{ policy.title_tr }}{% endif %} - EdebAi{% endblock %}
+
+{% block meta_description %}{% if request.LANGUAGE_CODE == 'en' %}{{ policy.meta_description_en }}{% else %}{{ policy.meta_description_tr }}{% endif %}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="main-container">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h1 class="font-serif" style="font-size: 48px; font-weight: 700; margin-bottom: 16px;">
+                {% if request.LANGUAGE_CODE == 'en' %}{{ policy.title_en }}{% else %}{{ policy.title_tr }}{% endif %}
+            </h1>
+            <p style="opacity: 0.6;">
+                {% if request.LANGUAGE_CODE == 'en' %}Last Updated{% else %}Son Güncelleme{% endif %}: {{ policy.last_updated|date:"d F Y" }}
+            </p>
+        </div>
+        
+        <!-- Content -->
+        <div style="max-width: 800px; margin: 0 auto; font-size: 18px; line-height: 1.8;">
+            {% if request.LANGUAGE_CODE == 'en' %}
+                {{ policy.content_en|linebreaks }}
+            {% else %}
+                {{ policy.content_tr|linebreaks }}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

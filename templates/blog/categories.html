@@ -1,0 +1,69 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="main-container">
+        <h1 class="section-title font-serif" style="font-size: 48px;">
+            {% if request.LANGUAGE_CODE == 'en' %}Categories{% else %}Kategoriler{% endif %}
+        </h1>
+        
+        <div style="display: grid; gap: 64px;">
+            {% for item in categories_with_articles %}
+            <div>
+                <!-- Category Header -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+                    <span style="font-size: 56px;">{{ item.category.icon }}</span>
+                    <div>
+                        <h2 class="font-serif" style="font-size: 36px; font-weight: 700; margin-bottom: 8px;">
+                            {{ item.category.name }}
+                        </h2>
+                        <p style="opacity: 0.6; font-size: 16px;">
+                            {{ item.category.description|default:"" }}
+                            <a href="{% url 'blog:category_detail' item.category.slug %}" style="color: #7c5cba; text-decoration: none; margin-left: 12px;">
+                                {% if request.LANGUAGE_CODE == 'en' %}View all ({{ item.category.get_article_count }}){% else %}Tümünü gör ({{ item.category.get_article_count }}){% endif %} →
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Articles Grid -->
+                <div class="grid-3">
+                    {% for article in item.articles %}
+                    <article class="blog-card">
+                        <a href="{% url 'blog:article_detail' article.slug %}">
+                            <div class="blog-card-image">
+                                {% if article.thumbnail %}
+                                <img src="{{ article.thumbnail.url }}" alt="{{ article.thumbnail_alt }}">
+                                {% else %}
+                                📝
+                                {% endif %}
+                            </div>
+                            <div class="blog-card-content">
+                                <div class="blog-meta">
+                                    <span>{{ article.published_date|date:"d M Y" }}</span>
+                                    <span>•</span>
+                                    <span>{{ article.reading_time }} {% if request.LANGUAGE_CODE == 'en' %}min{% else %}dk{% endif %}</span>
+                                </div>
+                                <h4 class="blog-title font-serif">{{ article.get_title|default:article.title }}</h4>
+                                <p class="blog-excerpt">{{ article.get_excerpt|truncatewords:15 }}</p>
+                                <span class="read-more">
+                                    {% if request.LANGUAGE_CODE == 'en' %}Read More{% else %}Devamını Oku{% endif %} <span>→</span>
+                                </span>
+                            </div>
+                        </a>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p style="text-align: center; opacity: 0.6;">
+                {% if request.LANGUAGE_CODE == 'en' %}No categories found.{% else %}Henüz kategori bulunmuyor.{% endif %}
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

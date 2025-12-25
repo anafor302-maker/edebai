@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    {# SEO Meta Tags #}
+    <title>{% block title %}{{ page_title|default:"EdebAi - Edebiyat ve Yapay Zekanın Kesişim Noktası" }}{% endblock %}</title>
+    
+    <meta name="description" content="{% block meta_description %}{% if seo %}{{ seo.meta_description }}{% else %}{{ meta_description|default:'Yapay zeka ile üretilen ve yapay zekayı anlatan nitelikli içerikler' }}{% endif %}{% endblock %}">
+    
+    {% block meta_keywords %}
+    {% if seo and seo.meta_keywords %}
+    <meta name="keywords" content="{{ seo.meta_keywords }}">
+    {% endif %}
+    {% endblock %}
+    
+    <meta name="author" content="EdebAi">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    
+    {# Canonical URL #}
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+    
+    {# Open Graph / Facebook #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}{% if seo %}{{ seo.og_title }}{% else %}{{ page_title|default:'EdebAi' }}{% endif %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% if seo %}{{ seo.og_description }}{% else %}{{ meta_description|default:'Yapay zeka ve edebiyat' }}{% endif %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% if seo and seo.og_image %}{{ request.scheme }}://{{ request.get_host }}{{ seo.og_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:site_name" content="EdebAi">
+    
+    {# Twitter Card #}
+    <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+    <meta name="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ page_title|default:'EdebAi' }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ meta_description|default:'Yapay zeka ve edebiyat' }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/twitter-card.jpg' %}{% endblock %}">
+    
+    {# Favicon #}
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    {# Fonts #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    {# CSS #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    {# Structured Data (JSON-LD) #}
+    {% block structured_data %}
+    {% if seo and seo.structured_data %}
+    <script type="application/ld+json">
+    {{ seo.structured_data|safe }}
+    </script>
+    {% endif %}
+    {% endblock %}
+</head>
+<body class="h-full font-sans">
+    <div id="app-wrapper" class="w-full h-full overflow-auto">
+        {# Navbar #}
+        <nav class="navbar">
+            <div class="main-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
+                    <div>
+                        <a href="{% url 'blog:home' %}">
+                            <h1 class="font-serif site-name">EdebAi</h1>
+                        </a>
+                    </div>
+                    
+                    {# Desktop Navigation #}
+                    <div class="desktop-nav">
+                        <a href="{% url 'blog:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Home{% else %}Ana Sayfa{% endif %}</a>
+                        <a href="{% url 'blog:blog_list' %}" class="nav-link {% if request.resolver_match.url_name == 'blog_list' %}active{% endif %}">Blog</a>
+                        <a href="{% url 'blog:category_list' %}" class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Categories{% else %}Kategoriler{% endif %}</a>
+                        <a href="{% url 'blog:about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}About{% else %}Hakkında{% endif %}</a>
+                        <a href="{% url 'blog:contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Contact{% else %}İletişim{% endif %}</a>
+                        <a href="{% url 'blog:search' %}" class="nav-link" aria-label="Search">🔍</a>
+                        {% if request.LANGUAGE_CODE == 'en' %}
+                        <a href="{% url 'blog:set_language' 'tr' %}" class="nav-link" style="font-size: 13px; opacity: 0.8;">TR</a>
+                        {% else %}
+                        <a href="{% url 'blog:set_language' 'en' %}" class="nav-link" style="font-size: 13px; opacity: 0.8;">EN</a>
+                        {% endif %}
+                    </div>
+                    
+                    {# Mobile Navigation #}
+                    <div class="mobile-nav">
+                        <button class="mobile-menu-button" onclick="toggleMobileMenu()" aria-label="Menu">
+                            ☰
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        {# Mobile Menu Backdrop #}
+        <div class="mobile-menu-backdrop" id="mobile-menu-backdrop" onclick="closeMobileMenu()"></div>
+        
+        {# Mobile Menu Links #}
+        <div class="mobile-nav-links" id="mobile-nav-links">
+            <a href="{% url 'blog:home' %}" class="nav-link">{% if request.LANGUAGE_CODE == 'en' %}Home{% else %}Ana Sayfa{% endif %}</a>
+            <a href="{% url 'blog:blog_list' %}" class="nav-link">Blog</a>
+            <a href="{% url 'blog:category_list' %}" class="nav-link">{% if request.LANGUAGE_CODE == 'en' %}Categories{% else %}Kategoriler{% endif %}</a>
+            <a href="{% url 'blog:about' %}" class="nav-link">{% if request.LANGUAGE_CODE == 'en' %}About{% else %}Hakkında{% endif %}</a>
+            <a href="{% url 'blog:contact' %}" class="nav-link">{% if request.LANGUAGE_CODE == 'en' %}Contact{% else %}İletişim{% endif %}</a>
+            <a href="{% url 'blog:search' %}" class="nav-link">🔍 {% if request.LANGUAGE_CODE == 'en' %}Search{% else %}Ara{% endif %}</a>
+        </div>
+        
+        {# Main Content #}
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        {# Footer #}
+        <footer class="footer">
+            <div class="main-container">
+                <div class="social-links">
+                    <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">⚡</a>
+                    <a href="#" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Medium">M</a>
+                </div>
+                <p style="text-align: center; opacity: 0.6; font-size: 14px; margin-bottom: 12px;">
+                    © {% now "Y" %} EdebAi. {% if request.LANGUAGE_CODE == 'en' %}Where AI and literature meet.{% else %}Geleceğin Kalemi.{% endif %}
+                </p>
+                <p style="text-align: center; font-size: 13px;">
+                    <a href="{% url 'blog:cookie_policy' %}" style="color: #7c5cba; text-decoration: none;">
+                        {% if request.LANGUAGE_CODE == 'en' %}Cookie Policy{% else %}Çerez Politikası{% endif %}
+                    </a>
+                </p>
+            </div>
+        </footer>
+        
+        {# Cookie Consent Banner #}
+        {% if cookie_consent %}
+        <div id="cookie-consent" class="cookie-banner" style="display: none;">
+            <div class="cookie-content">
+                <p style="margin-bottom: 16px; flex: 1;">
+                    {% if request.LANGUAGE_CODE == 'en' %}{{ cookie_consent.message_en }}{% else %}{{ cookie_consent.message_tr }}{% endif %}
+                </p>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="{% url 'blog:cookie_policy' %}" style="color: #7c5cba; text-decoration: none; white-space: nowrap;">
+                        {% if request.LANGUAGE_CODE == 'en' %}{{ cookie_consent.policy_link_text_en }}{% else %}{{ cookie_consent.policy_link_text_tr }}{% endif %}
+                    </a>
+                    <button onclick="acceptCookies()" class="cookie-accept-btn">
+                        {% if request.LANGUAGE_CODE == 'en' %}{{ cookie_consent.button_text_en }}{% else %}{{ cookie_consent.button_text_tr }}{% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {# JavaScript #}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="main-container">
+        <h1 class="section-title font-serif" style="font-size: 48px;">
+            {% if request.LANGUAGE_CODE == 'en' %}All Articles{% else %}Tüm Yazılar{% endif %}
+        </h1>
+        
+        <div class="grid-3">
+            {% for article in page_obj %}
+            <article class="blog-card">
+                <a href="{% url 'blog:article_detail' article.slug %}">
+                    <div class="blog-card-image">
+                        {% if article.thumbnail %}
+                        <img src="{{ article.thumbnail.url }}" alt="{{ article.thumbnail_alt }}">
+                        {% else %}
+                        🤖
+                        {% endif %}
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span>{{ article.published_date|date:"d F Y" }}</span>
+                            <span>•</span>
+                            <span>{{ article.reading_time }} {% if request.LANGUAGE_CODE == 'en' %}min read{% else %}dk okuma{% endif %}</span>
+                        </div>
+                        <h4 class="blog-title font-serif">{{ article.get_title|default:article.title }}</h4>
+                        <p class="blog-excerpt">{{ article.get_excerpt|default:article.excerpt }}</p>
+                        <span class="read-more">
+                            {% if request.LANGUAGE_CODE == 'en' %}Read More{% else %}Devamını Oku{% endif %} <span>→</span>
+                        </span>
+                    </div>
+                </a>
+            </article>
+            {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; opacity: 0.6;">
+                {% if request.LANGUAGE_CODE == 'en' %}No articles found.{% else %}Henüz makale bulunmuyor.{% endif %}
+            </p>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; {% if request.LANGUAGE_CODE == 'en' %}First{% else %}İlk{% endif %}</a>
+                <a href="?page={{ page_obj.previous_page_number }}">{% if request.LANGUAGE_CODE == 'en' %}Previous{% else %}Önceki{% endif %}</a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">{% if request.LANGUAGE_CODE == 'en' %}Next{% else %}Sonraki{% endif %}</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">{% if request.LANGUAGE_CODE == 'en' %}Last{% else %}Son{% endif %} &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

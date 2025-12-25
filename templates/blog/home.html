@@ -1,0 +1,86 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="main-container" style="text-align: center;">
+        <h2 class="font-serif hero-title">Edebiyat ve Yapay Zekanın Kesişim Noktası</h2>
+        <p class="hero-subtitle">Yapay zeka ile üretilen ve yapay zekayı anlatan nitelikli içerikler</p>
+        <a href="{% url 'blog:blog_list' %}" class="btn-primary">Makaleleri Keşfet</a>
+    </div>
+</section>
+
+<!-- Featured Posts -->
+<section class="section">
+    <div class="main-container">
+        <h3 class="section-title font-serif">Öne Çıkan Yazılar</h3>
+        <div class="grid-3">
+            {% for article in featured_articles %}
+            <article class="blog-card">
+                <a href="{% url 'blog:article_detail' article.slug %}">
+                    <div class="blog-card-image">
+                        {% if article.thumbnail %}
+                        <img src="{{ article.thumbnail.url }}" alt="{{ article.thumbnail_alt }}">
+                        {% else %}
+                        🤖
+                        {% endif %}
+                    </div>
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            <span>{{ article.published_date|date:"d F Y" }}</span>
+                            <span>•</span>
+                            <span>{{ article.reading_time }} dk okuma</span>
+                        </div>
+                        <h4 class="blog-title font-serif">{{ article.title }}</h4>
+                        <p class="blog-excerpt">{{ article.excerpt }}</p>
+                        <span class="read-more">
+                            Devamını Oku <span>→</span>
+                        </span>
+                    </div>
+                </a>
+            </article>
+            {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; opacity: 0.6;">Henüz öne çıkan makale bulunmuyor.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="section" style="padding-top: 0;">
+    <div class="main-container">
+        <h3 class="section-title font-serif">Kategoriler</h3>
+        <div class="grid-4">
+            {% for category in categories %}
+            <a href="{% url 'blog:category_detail' category.slug %}" class="category-card">
+                <div class="category-icon">{{ category.icon }}</div>
+                <h4 class="category-name">{{ category.name }}</h4>
+                <p class="category-count">{{ category.get_article_count }} makale</p>
+            </a>
+            {% empty %}
+            <p style="grid-column: 1/-1; text-align: center; opacity: 0.6;">Henüz kategori bulunmuyor.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="section" style="padding-top: 0;">
+    <div class="main-container">
+        <div class="newsletter-section">
+            <h3 class="font-serif newsletter-title">Bültene Katılın</h3>
+            <p class="newsletter-desc">Yeni yazılardan haberdar olmak için e-posta adresinizi bırakın</p>
+            <form class="newsletter-form">
+                {% csrf_token %}
+                <input type="email" class="newsletter-input" placeholder="E-posta adresiniz" required>
+                <button type="submit" class="newsletter-button">Abone Ol</button>
+            </form>
+            <p id="newsletter-success" class="success-message hidden"></p>
+            <p id="newsletter-error" class="error-message hidden"></p>
+        </div>
+    </div>
+</section>
+{% endblock %}
