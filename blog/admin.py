@@ -129,34 +129,6 @@ class ArticleAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(ArticleParagraph)
-class ArticleParagraphAdmin(admin.ModelAdmin):
-    list_display = ('article', 'order', 'paragraph_type', 'content_preview')
-    list_filter = ('paragraph_type', 'article')
-    search_fields = ('content', 'heading_text')
-    list_editable = ('order',)
-    
-    def content_preview(self, obj):
-        return obj.content[:100] + '...' if len(obj.content) > 100 else obj.content
-    content_preview.short_description = 'İçerik Önizleme'
-
-
-@admin.register(ArticleImage)
-class ArticleImageAdmin(admin.ModelAdmin):
-    list_display = ('article', 'order', 'image_preview', 'alt_text', 'after_paragraph')
-    list_filter = ('article',)
-    search_fields = ('alt_text', 'caption')
-    list_editable = ('order',)
-    readonly_fields = ('image_preview',)
-    
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="{}" style="max-width: 150px; max-height: 100px; border-radius: 4px;" />',
-                obj.image.url
-            )
-        return '-'
-    image_preview.short_description = 'Önizleme'
 
 
 @admin.register(NewsletterSubscriber)
