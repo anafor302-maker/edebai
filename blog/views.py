@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -319,3 +319,12 @@ def set_language(request, language):
             request.session['language'] = language
         return response
     return redirect('/')
+
+
+def robots_txt(request):
+    content = """User-agent: *
+Disallow: /admin/
+
+Sitemap: https://edebai.com.tr/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")

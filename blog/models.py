@@ -234,8 +234,8 @@ class Article(SEOMetadata):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse('article_detail', kwargs={'slug': self.slug})
-    
+        return reverse('blog:article_detail', kwargs={'slug': self.slug})
+
     def get_title(self, language='tr'):
         """Dile göre başlık döndür"""
         if language == 'en' and self.title_en:
@@ -286,10 +286,12 @@ class ArticleParagraph(models.Model):
         max_length=20,
         choices=PARAGRAPH_TYPES,
         default='text',
-        verbose_name="Paragraf Tipi"
+        verbose_name="Paragraf Tipi",
+        null = True,
+        blank = True
     )
     
-    content = models.TextField(verbose_name="İçerik (TR)")
+    content = models.TextField(blank= True ,verbose_name="İçerik (TR)")
     content_en = models.TextField(blank=True, verbose_name="İçerik (EN)")
     
     # Opsiyonel başlık (heading tipi için)

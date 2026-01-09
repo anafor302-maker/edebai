@@ -13,6 +13,7 @@ urlpatterns = [
     path('iletisim/', views.contact, name='contact'),
     path('ara/', views.search, name='search'),
     path('cerez-politikasi/', views.cookie_policy, name='cookie_policy'),
+    path("robots.txt", views.robots_txt),
     
     # Dil değiştirme
     path('dil/<str:language>/', views.set_language, name='set_language'),

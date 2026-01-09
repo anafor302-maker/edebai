@@ -247,7 +247,176 @@ function checkCookieConsent() {
 // Run on page load
 document.addEventListener('DOMContentLoaded', function() {
     checkCookieConsent();
+    initMusicPlayer();
 });
+
+// Music Player
+function initMusicPlayer() {
+    const playBtn = document.getElementById('play-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBar = document.querySelector('.progress-bar');
+    const progressFill = document.getElementById('progress-fill');
+    const volumeSlider = document.getElementById('volume-slider');
+    
+    if (!playBtn) return;
+    
+    let isPlaying = false;
+    let currentTime = 0;
+    let duration = 225; // 3:45 in seconds
+    let volume = 70;
+    let animationId = null;
+    
+    // Play/Pause
+    playBtn.addEventListener('click', function() {
+        isPlaying = !isPlaying;
+        
+        if (isPlaying) {
+            playBtn.textContent = '⏸';
+            playBtn.classList.add('playing');
+            startProgress();
+        } else {
+            playBtn.textContent = '▶';
+            playBtn.classList.remove('playing');
+            stopProgress();
+        }
+    });
+    
+    // Previous Track
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            currentTime = 0;
+            updateProgress();
+        });
+    }
+    
+    // Next Track
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            currentTime = 0;
+            updateProgress();
+            // Could switch to next track here
+        });
+    }
+    
+    // Progress Bar Click
+    if (progressBar) {
+        progressBar.addEventListener('click', function(e) {
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            currentTime = percent * duration;
+            updateProgress();
+        });
+    }
+    
+    // Volume Slider
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', function(e) {
+            volume = e.target.value;
+            // Here you would adjust actual audio volume
+        });
+    }
+    
+    function startProgress() {
+        function animate() {
+            if (isPlaying) {
+                currentTime += 0.1;
+                if (currentTime >= duration) {
+                    currentTime = 0;
+                    isPlaying = false;
+                    playBtn.textContent = '▶';
+                    playBtn.classList.remove('playing');
+                    return;
+                }
+                updateProgress();
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+        animate();
+    }
+    
+    function stopProgress() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+    }
+    
+    function updateProgress() {
+        const percent = (currentTime / duration) * 100;
+        if (progressFill) {
+            progressFill.style.width = percent + '%';
+        }
+        
+        // Update time display
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        
+        if (currentTimeEl) {
+            currentTimeEl.textContent = formatTime(currentTime);
+        }
+        if (durationEl) {
+            durationEl.textContent = formatTime(duration);
+        }
+    }
+    
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Initialize
+    updateProgress();
+}
+
+// Share Functions
+function shareOnTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(document.title);
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=550,height=420');
+}
+
+function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=550,height=420');
+}
+
+function shareOnLinkedIn() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=550,height=420');
+}
+
+function copyLink() {
+    const url = window.location.href;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function() {
+            showMessage('Link kopyalandı!', 'success');
+        }).catch(function() {
+            fallbackCopyLink(url);
+        });
+    } else {
+        fallbackCopyLink(url);
+    }
+}
+
+function fallbackCopyLink(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+        document.execCommand('copy');
+        showMessage('Link kopyalandı!', 'success');
+    } catch (err) {
+        showMessage('Link kopyalanamadı', 'error');
+    }
+    
+    document.body.removeChild(textarea);
+}
 
 // Add fade-in animation to elements when they come into view
 const observerOptions = {

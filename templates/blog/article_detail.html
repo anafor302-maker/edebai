@@ -74,44 +74,130 @@
             {% endif %}
         </div>
         
-        <!-- Content -->
-        <div class="blog-content">
-            <!-- Excerpt -->
-            <p style="font-size: 20px; font-weight: 500; opacity: 0.8; margin-bottom: 32px;">
-                {{ article.excerpt }}
-            </p>
-            
-            <!-- Dynamic Content -->
-            {% for item in content_items %}
-                {% if item.type == 'paragraph' %}
-                    {% with paragraph=item.data %}
-                        {% if paragraph.paragraph_type == 'heading' %}
-                            <h2>{{ paragraph.heading_text }}</h2>
-                        {% elif paragraph.paragraph_type == 'quote' %}
-                            <blockquote>{{ paragraph.content|linebreaks }}</blockquote>
-                        {% elif paragraph.paragraph_type == 'code' %}
-                            <pre><code>{{ paragraph.content }}</code></pre>
-                        {% else %}
-                            {{ paragraph.content|linebreaks }}
+        <!-- Two Column Layout -->
+        <div class="article-layout">
+            <!-- Left Column - Content -->
+            <div class="article-main-content">
+                <div class="blog-content">
+                    <!-- Excerpt -->
+                    <p style="font-size: 20px; font-weight: 500; opacity: 0.8; margin-bottom: 32px;">
+                        {{ article.excerpt }}
+                    </p>
+                    
+                    <!-- Dynamic Content -->
+                    {% for item in content_items %}
+                        {% if item.type == 'paragraph' %}
+                            {% with paragraph=item.data %}
+                                {% if paragraph.paragraph_type == 'heading' %}
+                                    <h2>{{ paragraph.heading_text }}</h2>
+                                {% elif paragraph.paragraph_type == 'quote' %}
+                                    <blockquote>{{ paragraph.content|linebreaks }}</blockquote>
+                                {% elif paragraph.paragraph_type == 'code' %}
+                                    <pre><code>{{ paragraph.content }}</code></pre>
+                                {% else %}
+                                    {{ paragraph.content|linebreaks }}
+                                {% endif %}
+                            {% endwith %}
+                        {% elif item.type == 'image' %}
+                            {% with image=item.data %}
+                                <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="content-image">
+                                {% if image.caption %}
+                                <p class="image-caption">{{ image.caption }}</p>
+                                {% endif %}
+                            {% endwith %}
                         {% endif %}
-                    {% endwith %}
-                {% elif item.type == 'image' %}
-                    {% with image=item.data %}
-                        <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" class="content-image">
-                        {% if image.caption %}
-                        <p class="image-caption">{{ image.caption }}</p>
-                        {% endif %}
-                    {% endwith %}
-                {% endif %}
-            {% endfor %}
-            
-            <!-- Author Bio -->
-            {% if article.author_bio %}
-            <div style="border-top: 2px solid #f5f3f0; margin-top: 48px; padding-top: 32px;">
-                <h3 style="font-size: 20px; margin-bottom: 12px;">Yazar Hakkında</h3>
-                <p style="font-size: 16px; opacity: 0.8;">{{ article.author_bio }}</p>
+                    {% endfor %}
+                    
+                    <!-- Author Bio -->
+                    {% if article.author_bio %}
+                    <div style="border-top: 2px solid #f5f3f0; margin-top: 48px; padding-top: 32px;">
+                        <h3 style="font-size: 20px; margin-bottom: 12px;">Yazar Hakkında</h3>
+                        <p style="font-size: 16px; opacity: 0.8;">{{ article.author_bio }}</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            {% endif %}
+            
+            <!-- Right Column - Sidebar (Sticky) -->
+            <aside class="article-sidebar">
+                <!-- Music Player -->
+                <div class="sidebar-widget music-player-widget">
+                    <h3 class="widget-title">🎵 Sesli Özet </h3>
+                    <div class="music-player">
+
+                        <div class="player-controls">
+                            <button class="player-btn player-btn-main" id="play-btn" aria-label="Play">▶</button>
+                        </div>
+                        <div class="player-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="player-time">
+                                <span id="current-time">0:00</span>
+                                <span id="duration">3:45</span>
+                            </div>
+                        </div>
+                        <div class="player-volume">
+                            <span style="font-size: 14px;">🔊</span>
+                            <input type="range" id="volume-slider" min="0" max="100" value="70" class="volume-slider">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ad Banner 1 -->
+                {% comment %} <div class="sidebar-widget ad-widget">
+                    <p class="ad-label">Reklam</p>
+                    <div class="ad-banner ad-banner-large">
+                        <div class="ad-placeholder">
+                            <p style="font-size: 14px; opacity: 0.6;">300x250</p>
+                            <p style="font-size: 12px; opacity: 0.5; margin-top: 8px;">Reklam Alanı</p>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+                
+                <!-- Category Widget -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">📂 Kategoriler</h3>
+                    <div class="category-list">
+                        {% if article.category %}
+                        <a href="{% url 'blog:category_detail' article.category.slug %}" class="category-item active">
+                            <span>{{ article.category.icon }}</span>
+                            <span>{{ article.category.name }}</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Ad Banner 2 -->
+                {% comment %} <div class="sidebar-widget ad-widget">
+                    <p class="ad-label">Reklam</p>
+                    <div class="ad-banner ad-banner-medium">
+                        <div class="ad-placeholder">
+                            <p style="font-size: 14px; opacity: 0.6;">300x150</p>
+                            <p style="font-size: 12px; opacity: 0.5; margin-top: 8px;">Reklam Alanı</p>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+                
+                <!-- Share Widget -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">🔗 Paylaş</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn share-twitter" onclick="shareOnTwitter()" aria-label="Twitter'da Paylaş">
+                            𝕏
+                        </button>
+                        <button class="share-btn share-facebook" onclick="shareOnFacebook()" aria-label="Facebook'ta Paylaş">
+                            f
+                        </button>
+                        <button class="share-btn share-linkedin" onclick="shareOnLinkedIn()" aria-label="LinkedIn'de Paylaş">
+                            in
+                        </button>
+                        <button class="share-btn share-copy" onclick="copyLink()" aria-label="Linki Kopyala">
+                            🔗
+                        </button>
+                    </div>
+                </div>
+            </aside>
         </div>
         
         <!-- Related Articles -->
@@ -149,4 +235,59 @@
         {% endif %}
     </div>
 </article>
+
+{% block extra_js %}
+<script>
+// Article-specific JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Lazy load images
+    const images = document.querySelectorAll('.content-image');
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.style.opacity = '0';
+                    img.style.transition = 'opacity 0.5s ease';
+                    
+                    img.onload = () => {
+                        img.style.opacity = '1';
+                    };
+                    
+                    observer.unobserve(img);
+                }
+            });
+        });
+        
+        images.forEach(img => imageObserver.observe(img));
+    }
+    
+    // Reading progress indicator (optional)
+    const article = document.querySelector('.article-main-content');
+    if (article) {
+        let progressBar = document.createElement('div');
+        progressBar.style.position = 'fixed';
+        progressBar.style.top = '0';
+        progressBar.style.left = '0';
+        progressBar.style.width = '0%';
+        progressBar.style.height = '3px';
+        progressBar.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
+        progressBar.style.zIndex = '9999';
+        progressBar.style.transition = 'width 0.1s ease';
+        document.body.appendChild(progressBar);
+        
+        window.addEventListener('scroll', () => {
+            const articleRect = article.getBoundingClientRect();
+            const articleHeight = article.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrolled = Math.max(0, -articleRect.top);
+            const scrollableHeight = articleHeight - windowHeight;
+            const progress = scrollableHeight > 0 ? (scrolled / scrollableHeight) * 100 : 0;
+            
+            progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+        });
+    }
+});
+</script>
+{% endblock %}
 {% endblock %}

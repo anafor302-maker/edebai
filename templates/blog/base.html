@@ -76,9 +76,7 @@
                     
                     {# Desktop Navigation #}
                     <div class="desktop-nav">
-                        <a href="{% url 'blog:home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Home{% else %}Ana Sayfa{% endif %}</a>
                         <a href="{% url 'blog:blog_list' %}" class="nav-link {% if request.resolver_match.url_name == 'blog_list' %}active{% endif %}">Blog</a>
-                        <a href="{% url 'blog:category_list' %}" class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Categories{% else %}Kategoriler{% endif %}</a>
                         <a href="{% url 'blog:about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}About{% else %}Hakkında{% endif %}</a>
                         <a href="{% url 'blog:contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Contact{% else %}İletişim{% endif %}</a>
                         <a href="{% url 'blog:search' %}" class="nav-link" aria-label="Search">🔍</a>
