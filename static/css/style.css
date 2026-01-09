@@ -997,7 +997,7 @@ body {
     }
     
     .blog-detail-title {
-        font-size: 32px;
+        font-size: 24px;
     }
     
     .blog-detail-meta {
@@ -1006,15 +1006,15 @@ body {
     }
     
     .blog-content {
-        font-size: 16px;
+        font-size: 14px;
     }
     
     .blog-content h2 {
-        font-size: 28px;
+        font-size: 22px;
     }
     
     .blog-content h3 {
-        font-size: 22px;
+        font-size: 20px;
     }
     
     .cookie-banner {
@@ -1102,3 +1102,4 @@ body {
 .cookie-accept-btn:hover {
     background-color: #9b7bc8;
 }
+
