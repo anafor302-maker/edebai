@@ -65,37 +65,31 @@
 <body class="h-full font-sans">
     <div id="app-wrapper" class="w-full h-full overflow-auto">
         {# Navbar #}
-        <nav class="navbar">
-            <div class="main-container">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
-                    <div>
-                        <a href="{% url 'blog:home' %}">
-                            <h1 class="font-serif site-name">EdebAi</h1>
-                        </a>
-                    </div>
-                    
-                    {# Desktop Navigation #}
-                    <div class="desktop-nav">
-                        <a href="{% url 'blog:blog_list' %}" class="nav-link {% if request.resolver_match.url_name == 'blog_list' %}active{% endif %}">Blog</a>
-                        <a href="{% url 'blog:about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}About{% else %}Hakkında{% endif %}</a>
-                        <a href="{% url 'blog:contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">{% if request.LANGUAGE_CODE == 'en' %}Contact{% else %}İletişim{% endif %}</a>
-                        <a href="{% url 'blog:search' %}" class="nav-link" aria-label="Search">🔍</a>
-                        {% if request.LANGUAGE_CODE == 'en' %}
-                        <a href="{% url 'blog:set_language' 'tr' %}" class="nav-link" style="font-size: 13px; opacity: 0.8;">TR</a>
-                        {% else %}
-                        <a href="{% url 'blog:set_language' 'en' %}" class="nav-link" style="font-size: 13px; opacity: 0.8;">EN</a>
-                        {% endif %}
-                    </div>
-                    
-                    {# Mobile Navigation #}
-                    <div class="mobile-nav">
-                        <button class="mobile-menu-button" onclick="toggleMobileMenu()" aria-label="Menu">
-                            ☰
-                        </button>
-                    </div>
-                </div>
+<nav class="navbar">
+    <div class="main-container">
+        <div class="navbar-inner">
+            <a href="{% url 'blog:home' %}" class="site-name font-serif">EdebAi</a>
+
+            <div class="desktop-nav">
+                <a href="{% url 'blog:blog_list' %}" class="nav-link">Blog</a>
+                <a href="{% url 'blog:about' %}" class="nav-link">
+                    {% if request.LANGUAGE_CODE == 'en' %}About{% else %}Hakkında{% endif %}
+                </a>
+                <a href="{% url 'blog:contact' %}" class="nav-link">
+                    {% if request.LANGUAGE_CODE == 'en' %}Contact{% else %}İletişim{% endif %}
+                </a>
+                <a href="{% url 'blog:search' %}" class="nav-link">🔍</a>
+
+                {% if request.LANGUAGE_CODE == 'en' %}
+                    <a href="{% url 'blog:set_language' 'tr' %}" class="nav-link">TR</a>
+                {% else %}
+                    <a href="{% url 'blog:set_language' 'en' %}" class="nav-link">EN</a>
+                {% endif %}
             </div>
-        </nav>
+        </div>
+    </div>
+</nav>
+
         
         {# Mobile Menu Backdrop #}
         <div class="mobile-menu-backdrop" id="mobile-menu-backdrop" onclick="closeMobileMenu()"></div>

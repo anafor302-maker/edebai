@@ -1104,3 +1104,30 @@ body {
     background-color: #9b7bc8;
 }
 
+.navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* MOBİL */
+@media (max-width: 768px) {
+    .navbar-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 10px 0;
+    }
+
+    .desktop-nav {
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        font-size: 14px;
+    }
+
+    .site-name {
+        font-size: 26px;
+    }
+}
