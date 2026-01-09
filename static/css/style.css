@@ -997,7 +997,7 @@ body {
     }
     
     .blog-detail-title {
-        font-size: 24px;
+        font-size: 20px;
     }
     
     .blog-detail-meta {
@@ -1006,15 +1006,15 @@ body {
     }
     
     .blog-content {
-        font-size: 14px;
+        font-size: 12px;
     }
     
     .blog-content h2 {
-        font-size: 22px;
+        font-size: 18px;
     }
     
     .blog-content h3 {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .cookie-banner {
