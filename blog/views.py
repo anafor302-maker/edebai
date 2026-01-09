@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.db.models import Count
+from django.db import models
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.translation import get_language
@@ -46,21 +48,55 @@ def home(request):
 
 def blog_list(request):
     """Tüm makaleler listesi"""
-    articles = Article.objects.filter(
-        is_published=True
-    ).select_related('category').order_by('-published_date')
-    
-    # Sayfalama
-    paginator = Paginator(articles, 9)  # Sayfa başına 9 makale
+
+    articles = (
+        Article.objects
+        .filter(is_published=True)
+        .select_related('category')
+        .order_by('-published_date')
+    )
+
+    # Pagination
+    paginator = Paginator(articles, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
+    # Kategoriler (sidebar için)
+    categories = (
+        Category.objects
+        .annotate(
+            article_count=Count(
+                'articles',
+                filter=models.Q(articles__is_published=True)
+            )
+        )
+        .filter(article_count__gt=0)
+    )
+
+    # === HASHTAG / KEYWORD ÜRETİMİ ===
+    raw_keywords = (
+        Article.objects
+        .filter(is_published=True)
+        .exclude(meta_keywords__isnull=True)
+        .exclude(meta_keywords__exact="")
+        .values_list('meta_keywords', flat=True)
+    )
+
+    tag_set = set()
+    for keywords in raw_keywords:
+        for keyword in keywords.split(','):
+            tag_set.add(keyword.strip().lower())
+
+    tags = sorted(tag_set)
+
     context = {
         'page_obj': page_obj,
+        'categories': categories,
+        'tags': tags,
         'page_title': 'Tüm Yazılar - EdebAi',
         'meta_description': 'Yapay zeka, prompt engineering ve dijital üretkenlik üzerine tüm makalelerimiz.',
     }
-    
+
     return render(request, 'blog/blog_list.html', context)
 
 

@@ -1131,3 +1131,28 @@ body {
         font-size: 26px;
     }
 }
+
+
+/* Tag Cloud */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    padding: 8px 14px;
+    background: #f5f3f0;
+    border-radius: 999px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #2c2c2c;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.tag:hover {
+    background: #7c5cba;
+    color: #fff;
+    transform: translateY(-2px);
+}
