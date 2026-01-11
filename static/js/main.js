@@ -438,3 +438,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const animatedElements = document.querySelectorAll('.blog-card, .category-card, .section-title');
     animatedElements.forEach(el => observer.observe(el));
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("audio-toggle-btn");
+    const player = document.getElementById("audio-player-wrapper");
+
+    if (!toggleBtn || !player) return;
+
+    toggleBtn.addEventListener("click", () => {
+        player.classList.toggle("audio-player-hidden");
+        player.classList.toggle("audio-player-visible");
+    });
+});

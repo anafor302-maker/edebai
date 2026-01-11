@@ -85,6 +85,12 @@
                 {% else %}
                     <a href="{% url 'blog:set_language' 'en' %}" class="nav-link">EN</a>
                 {% endif %}
+                {% if request.resolver_match.url_name == 'article_detail' %}
+                    <button id="audio-toggle-btn" class="audio-toggle-btn" aria-label="Sesli Özet">
+                        🎵
+                    </button>
+                {% endif %}
+
             </div>
         </div>
     </div>

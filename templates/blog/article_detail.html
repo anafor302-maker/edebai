@@ -120,14 +120,16 @@
             
             <!-- Right Column - Sidebar (Sticky) -->
             <aside class="article-sidebar">
-                <!-- Music Player -->
+            <div id="audio-player-wrapper" class="audio-player-hidden">
                 <div class="sidebar-widget music-player-widget">
-                    <h3 class="widget-title">🎵 Sesli Özet </h3>
+                    <h3 class="widget-title">🎵 Sesli Özet</h3>
+
                     <div class="music-player">
 
                         <div class="player-controls">
-                            <button class="player-btn player-btn-main" id="play-btn" aria-label="Play">▶</button>
+                            <button class="player-btn player-btn-main" id="play-btn">▶</button>
                         </div>
+
                         <div class="player-progress">
                             <div class="progress-bar">
                                 <div class="progress-fill" id="progress-fill"></div>
@@ -137,12 +139,16 @@
                                 <span id="duration">3:45</span>
                             </div>
                         </div>
+
                         <div class="player-volume">
-                            <span style="font-size: 14px;">🔊</span>
-                            <input type="range" id="volume-slider" min="0" max="100" value="70" class="volume-slider">
+                            <span>🔊</span>
+                            <input type="range" id="volume-slider" min="0" max="100" value="70">
                         </div>
+
                     </div>
                 </div>
+            </div>
+
                 
                 <!-- Ad Banner 1 -->
                 {% comment %} <div class="sidebar-widget ad-widget">
@@ -237,6 +243,7 @@
 </article>
 
 {% block extra_js %}
+
 <script>
 // Article-specific JavaScript
 document.addEventListener('DOMContentLoaded', function() {

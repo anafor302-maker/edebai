@@ -1161,3 +1161,64 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+/* NAVBAR SES BUTONU */
+.audio-toggle-btn {
+    background: linear-gradient(135deg, #7b61ff, #ddcff8);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease, box-shadow .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    margin-left: 12px;
+
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.audio-toggle-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(123, 97, 255, 0.45);
+}
+
+/* PLAYER GİZLE/GÖSTER */
+#audio-player-wrapper {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 320px;
+    z-index: 9999;
+    transition: opacity .3s ease, transform .3s ease;
+}
+
+.audio-player-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+.audio-player-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* MOBİL */
+@media (max-width: 768px) {
+    #audio-player-wrapper {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
